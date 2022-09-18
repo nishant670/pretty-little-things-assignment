@@ -12,7 +12,7 @@ export const getShopItems = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios(API_URL);
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.log("api error", error.response);

@@ -1,23 +1,25 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const CardFooter = ({ price, color, priceStyles }) => {
+const CardFooter = ({ price, color, priceStyles, containerStyles }) => {
   return (
-    <View style={styles.footerContainer}>
+    <View style={[styles.footerContainer, containerStyles]}>
       <View>
         <Text style={[styles.price, priceStyles]}>{`$ ${price}`}</Text>
         {priceStyles && <Text>inclusive of all taxes</Text>}
       </View>
       <View style={styles.colorContainer}>
-        <View
-          style={[
-            styles.colorBox,
-            {
-              backgroundColor:
-                color == "Stone" ? "#B7B09C" : color.toLowerCase(),
-            },
-          ]}
-        ></View>
+        {color && (
+          <View
+            style={[
+              styles.colorBox,
+              {
+                backgroundColor:
+                  color == "Stone" ? "#B7B09C" : color.toLowerCase(),
+              },
+            ]}
+          ></View>
+        )}
         <Text style={styles.colorText}>{color}</Text>
       </View>
     </View>

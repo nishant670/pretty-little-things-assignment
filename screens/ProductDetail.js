@@ -5,6 +5,7 @@ import { GlobalStyles } from "../constants/styles";
 import CardFooter from "../components/product/CardFooter";
 import ActionButton from "../components/product/ActionButton";
 import { removeFavorite, addFavorite } from "../store/favorites";
+import { addToCart } from "../store/cart";
 import IconButton from "../components/IconButton";
 
 const ProductDetail = ({ route, navigation }) => {
@@ -12,10 +13,12 @@ const ProductDetail = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.shop);
+  const { cartItems } = useSelector((state) => state.cart);
   const { ids } = useSelector((state) => state.favorites);
 
   const product = items.find((item) => item.id == productId);
   const isProductFavorite = ids.includes(productId);
+  const isProductAddedInCart = cartItems.find((item) => item.id == productId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,7 +35,6 @@ const ProductDetail = ({ route, navigation }) => {
   }, [navigation]);
 
   const favoriteToggleHandler = () => {
-    console.log("fav toggle");
     if (isProductFavorite) {
       dispatch(removeFavorite(productId));
     } else {
@@ -40,37 +42,47 @@ const ProductDetail = ({ route, navigation }) => {
     }
   };
 
+  const addToCartHandler = () => {
+    if (!isProductAddedInCart) {
+      dispatch(addToCart(product));
+    }
+    navigation.navigate("cart");
+  };
+
   return (
-    <ScrollView style={styles.rootContainer}>
-      <Image
-        source={{ uri: product.img }}
-        style={styles.image}
-        resizeMode="contain"
-      />
-      <Text style={styles.title}>{product.name}</Text>
-      <CardFooter
-        price={product.price}
-        color={product.colour}
-        priceStyles={styles.price}
-      />
-      <View style={styles.actionContainer}>
-        <ActionButton
-          icon={isProductFavorite ? "heart" : "heart-outline"}
-          iconColor={isProductFavorite ? "red" : "#333"}
-          text={isProductFavorite ? "My Favorite" : "Add to Favorites"}
-          buttonStyles={styles.addToFav}
-          textStyles={styles.addToFavText}
-          pressHandler={favoriteToggleHandler}
+    product && (
+      <ScrollView style={styles.rootContainer}>
+        <Image
+          source={{ uri: product.img }}
+          style={styles.image}
+          resizeMode="contain"
         />
-        <ActionButton
-          icon="cart-outline"
-          iconColor="#fff"
-          text="Add to Cart"
-          buttonStyles={styles.addToCart}
-          textStyles={styles.addToCartText}
+        <Text style={styles.title}>{product.name}</Text>
+        <CardFooter
+          price={product.price}
+          color={product.colour}
+          priceStyles={styles.price}
         />
-      </View>
-    </ScrollView>
+        <View style={styles.actionContainer}>
+          <ActionButton
+            icon={isProductFavorite ? "heart" : "heart-outline"}
+            iconColor={isProductFavorite ? "red" : "#333"}
+            text={isProductFavorite ? "My Favorite" : "Add to Favorites"}
+            buttonStyles={styles.addToFav}
+            textStyles={styles.addToFavText}
+            pressHandler={favoriteToggleHandler}
+          />
+          <ActionButton
+            icon="cart-outline"
+            iconColor="#fff"
+            text={isProductAddedInCart ? "Already In Cart" : "Add to Cart"}
+            buttonStyles={styles.addToCart}
+            textStyles={styles.addToCartText}
+            pressHandler={addToCartHandler}
+          />
+        </View>
+      </ScrollView>
+    )
   );
 };
 
@@ -87,7 +99,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     margin: 8,
     textAlign: "center",
-    // color: GlobalStyles.colors.primary500,
   },
   price: {
     fontSize: 21,
@@ -103,7 +114,6 @@ const styles = StyleSheet.create({
     padding: 0,
     height: 50,
     flex: 1,
-    // paddingHorizontal: 20,
   },
   addToCart: {
     borderColor: GlobalStyles.colors.primary400,

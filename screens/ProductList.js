@@ -9,23 +9,6 @@ const ProductList = ({ navigation }) => {
   const dispatch = useDispatch();
   const { isLoading, items } = useSelector((state) => state.shop);
 
-  // const [products,setProducts] = useState()
-  // const [loading,setLoading] = useState(false)
-
-  // const fetchProducts = async () => {
-  //   try {
-  //     setLoading(true)
-  //     const response = await fetch("https://my-json-server.typicode.com/benirvingplt/products/products")
-  //   const json = await response.json()
-  //   setLoading(false)
-  //   console.log("api json", json)
-  //   setProducts(json)
-  //   } catch (error) {
-  //   setLoading(false)
-  //     console.log("error", error)
-  //   }
-  // }
-
   useEffect(() => {
     dispatch(getShopItems());
   }, []);
